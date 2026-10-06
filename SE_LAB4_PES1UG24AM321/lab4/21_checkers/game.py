@@ -85,7 +85,7 @@ class Checkers:
             else:
                 print("Invalid move.")
                 continue
- 
+  
             print(result)
             self.chain = None
             self.player = self.opponent()
