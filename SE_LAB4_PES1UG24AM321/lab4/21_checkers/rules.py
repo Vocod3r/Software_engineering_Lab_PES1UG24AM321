@@ -64,3 +64,20 @@ def promote(board):
             board[SIZE - 1][c] = "BK"
             promoted.append((SIZE - 1, c))
     return promoted
+
+
+
+def captures_from(board, player, start):
+    """Squares the piece on start can jump to."""
+    sr, sc = start
+    ends = []
+    for dr in (-2, 2):
+        for dc in (-2, 2):
+            end = (sr + dr, sc + dc)
+            if in_bounds(*end) and capture_move(board, player, start, end):
+                ends.append(end)
+    return ends
+
+
+def has_capture(board, player):
+    return any(captures_from(board, player, sq) for sq in player_squares(board, player))
