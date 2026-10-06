@@ -101,3 +101,8 @@ class Checkers:
         if not has_any_move(self.board, self.player):
             return f"{self.player} has no legal moves. {self.opponent()} wins!"
         return None
+    
+    def print_board(self):
+        print("\n   " + " ".join(f"{c:<2}" for c in range(SIZE)).rstrip())
+        for r, row in enumerate(self.board):
+            print((f"{r}  " + " ".join(f"{cell:<2}" for cell in row)).rstrip())

@@ -4,25 +4,29 @@ SIZE = 8
 def simple_move(board, player, start, end):
     sr, sc = start
     er, ec = end
-    direction = -1 if player == "R" else 1
+    piece = board[sr][sc]
     return (
+        owner(piece) == player and
         board[er][ec] == "." and
-        abs(er - sr) == 1 and abs(ec - sc) == 1 and
-        er - sr == direction
+        abs(ec - sc) == 1 and
+        (er - sr) in row_directions(piece)
     )
 
 
 def capture_move(board, player, start, end):
     sr, sc = start
     er, ec = end
-    direction = -1 if player == "R" else 1
+    piece = board[sr][sc]
+    if owner(piece) != player or board[er][ec] != ".":
+        return False
+    if abs(er - sr) != 2 or abs(ec - sc) != 2:
+        return False
+    if (er - sr) // 2 not in row_directions(piece):
+        return False
     mr, mc = (sr + er) // 2, (sc + ec) // 2
-    return (
-        board[er][ec] == "." and
-        abs(er - sr) == 2 and abs(ec - sc) == 2 and
-        er - sr == 2 * direction and
-        board[mr][mc] not in (".", player)
-    )
+    # The jumped piece must belong to the opponent (man or king).
+    return owner(board[mr][mc]) not in (None, player)
+
 
 def in_bounds(r, c):
     return 0 <= r < SIZE and 0 <= c < SIZE
@@ -81,3 +85,14 @@ def captures_from(board, player, start):
 
 def has_capture(board, player):
     return any(captures_from(board, player, sq) for sq in player_squares(board, player))
+
+def owner(piece):
+    """'R' or 'B' for a piece ('R', 'RK', 'B', 'BK'), None for an empty square."""
+    return None if piece == "." else piece[0]
+
+
+def row_directions(piece):
+    """Row steps a piece may take: kings go both ways, men only forward."""
+    if piece.endswith("K"):
+        return (-1, 1)
+    return (-1,) if owner(piece) == "R" else (1,)
