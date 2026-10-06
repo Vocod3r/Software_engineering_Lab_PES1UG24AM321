@@ -89,3 +89,15 @@ class Checkers:
             print(result)
             self.chain = None
             self.player = self.opponent()
+            
+            
+    def opponent(self):
+        return "B" if self.player == "R" else "R"
+
+    def game_over_message(self):
+        """Why the current player has lost, or None if the game continues."""
+        if not player_squares(self.board, self.player):
+            return f"{self.player} has no pieces left. {self.opponent()} wins!"
+        if not has_any_move(self.board, self.player):
+            return f"{self.player} has no legal moves. {self.opponent()} wins!"
+        return None
